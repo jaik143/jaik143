@@ -70,41 +70,28 @@ I came to infrastructure from application development, which is why I care about
 
 ### [Go Web App — CI/CD to Kubernetes with GitHub Actions](https://github.com/jaik143/go-web-app-cicd)
 
-A Go service packaged into a distroless image and shipped to Kubernetes by a four-stage GitHub Actions pipeline, with Helm as the deployment interface.
+A Go service packaged into a distroless image and shipped to Kubernetes by a four-job GitHub Actions pipeline, with Helm as the deployment interface.
 
 **`Go`** · **`Docker`** · **`Kubernetes`** · **`Helm`** · **`GitHub Actions`** · **`Nginx Ingress`**
 
 - Wrote a multi-stage Dockerfile that compiles a static Go binary and copies it into `gcr.io/distroless/base`, so the runtime image ships without a shell or package manager.
 - Built a GitHub Actions workflow with separate `build`, `code-quality`, `push` and `update-tag` jobs — `go test ./...` and `golangci-lint` run as independent gates before any image is published.
-- Closed the CI/CD loop: the pipeline writes the new image tag back into the Helm chart's `values.yaml` and commits it, so the deployed version always traces to a build.
-- Packaged Deployment, Service and Ingress as a Helm chart so environment differences are values rather than forked manifests, and exposed the service through an Nginx Ingress Controller.
+- Closed the CI/CD loop: the pipeline writes the new image tag back into the Helm chart's `values.yaml` and commits it, so the deployed version always traces to a single build.
+- Tagged every image with its workflow run ID rather than `latest`, making a rollback a Helm value change to a known-good tag instead of a rebuild.
 
 ---
 
 ### [Highly Available AWS Infrastructure with Terraform](https://github.com/jaik143/aws-infra-with-terraform)
 
-A multi-AZ AWS environment provisioned entirely as code, with an Nginx reverse-proxy tier fronting Apache backends behind internal and external load balancers.
+A multi-AZ AWS environment provisioned entirely as code, with an Nginx reverse-proxy tier fronting Apache backends behind external and internal load balancers.
 
 **`Terraform`** · **`AWS VPC`** · **`EC2`** · **`ALB`** · **`NAT Gateway`** · **`S3`** · **`DynamoDB`** · **`Nginx`**
 
-- Provisioned a VPC spanning two availability zones with paired public/private subnets, one NAT Gateway per AZ so a single-AZ failure does not cut egress for the surviving zone.
+- Provisioned a VPC spanning two availability zones with paired public/private subnets, and one NAT Gateway per AZ so a single-AZ failure does not cut egress for the surviving zone.
 - Composed the estate from local Terraform modules (VPC, subnets, route tables, NAT, security groups, load balancers, EC2) instead of one flat configuration, so each layer is versioned and reusable.
 - Configured an S3 remote backend with DynamoDB state locking, making concurrent `apply` runs safe for more than one operator.
 - Generated Nginx configuration and EC2 user data with `templatefile()`, so proxy upstreams are derived from Terraform outputs rather than hand-edited after deploy.
 - Split traffic across an external ALB at the edge and an internal ALB in front of the Apache tier, keeping backends off the public internet.
-
----
-
-### [Parameterised AWS Network Provisioning with Terraform](https://github.com/jaik143/terraform-vpc-provisioning)
-
-A single Terraform configuration that stands up a complete, production-shaped AWS network across public, private and database tiers.
-
-**`Terraform`** · **`AWS VPC`** · **`NAT Gateway`** · **`VPC Peering`**
-
-- Provisions public, private and database subnet tiers across two availability zones, with an Internet Gateway, NAT Gateway and per-tier route tables wired automatically.
-- Exposes 18+ input variables (CIDR blocks, project and environment tags, AZ selection) so the same configuration serves dev, staging and production without edits.
-- Gates VPC peering behind an `is_peering_required` flag, so lower environments skip resources they do not need.
-- Publishes VPC and subnet IDs as typed outputs for downstream stacks to consume instead of hard-coding identifiers.
 
 ---
 
@@ -123,17 +110,6 @@ A three-tier web architecture on AWS built for high availability, with the datab
 
 ---
 
-### [Containerising a Django Application](https://github.com/jaik143/Conterization-of-django-application)
-
-A Django application packaged for container-based deployment, with the image build and runtime configuration separated from the application code.
-
-**`Docker`** · **`Python`** · **`Django`** · **`Linux`**
-
-- Wrote a Dockerfile that installs pinned dependencies from `requirements.txt` as a distinct layer, so dependency installation is cached and only invalidated when requirements actually change.
-- Bound the development server to `0.0.0.0` inside the container so it is reachable through published ports, and documented the port-mapping and host access path for both local and remote hosts.
-
----
-
 ### [AWS Resource Tracker](https://github.com/jaik143/Shell-sceipting-Project)
 
 A Bash utility that reports live AWS account usage across services, designed to run unattended as a scheduled job.
@@ -144,6 +120,17 @@ A Bash utility that reports live AWS account usage across services, designed to 
 - Parses CLI JSON with `jq` into readable columns instead of dumping raw API responses.
 - Runs under `set -euo pipefail` with a preflight check on AWS credentials, so a broken run fails loudly rather than reporting an empty account.
 - Writes a dated log file so an account keeps a usage trail from cron alone, with no additional tooling.
+
+---
+
+### [Containerising a Django Application](https://github.com/jaik143/Conterization-of-django-application)
+
+A Django application packaged for container-based deployment, with the image build and runtime configuration separated from the application code.
+
+**`Docker`** · **`Python`** · **`Django`** · **`Linux`**
+
+- Wrote a Dockerfile that installs pinned dependencies from `requirements.txt` as a distinct layer, so dependency installation is cached and only invalidated when requirements actually change.
+- Bound the development server to `0.0.0.0` inside the container so it is reachable through published ports, and documented the port-mapping and host access path for both local and remote hosts.
 
 ---
 
