@@ -66,6 +66,16 @@ I came to infrastructure from application development, which is why I care about
 
 ---
 
+## Currently Building
+
+### [50 Days of Kubernetes](https://github.com/jaik143/50daysofKubernetes)
+
+A learning-in-public repository where I document Kubernetes concepts, commands, YAML examples and practical exercises as I work through container orchestration fundamentals.
+
+**Current focus:** Kubernetes · Containers · Pods · Deployments · Services · Cloud Native
+
+---
+
 ## Featured Engineering Projects
 
 ### [Go Web App — CI/CD to Kubernetes with GitHub Actions](https://github.com/jaik143/go-web-app-cicd)
@@ -110,7 +120,7 @@ A three-tier web architecture on AWS built for high availability, with the datab
 
 ---
 
-### [AWS Resource Tracker](https://github.com/jaik143/Shell-sceipting-Project)
+### [AWS Resource Tracker](https://github.com/jaik143/aws-resource-tracker)
 
 A Bash utility that reports live AWS account usage across services, designed to run unattended as a scheduled job.
 
@@ -123,7 +133,7 @@ A Bash utility that reports live AWS account usage across services, designed to 
 
 ---
 
-### [Containerising a Django Application](https://github.com/jaik143/Conterization-of-django-application)
+### [Containerising a Django Application](https://github.com/jaik143/django-docker-deployment)
 
 A Django application packaged for container-based deployment, with the image build and runtime configuration separated from the application code.
 
